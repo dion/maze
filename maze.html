@@ -1,0 +1,136 @@
+<pre>
+            ['.', '#', '#', '#', '#', '#'],
+            ['.', '.', '.', '.', '.', '#'],
+            ['#', '.', '#', '#', '#', '#'],
+            ['#', '.', '#', '#', '#', '#'],
+            ['.', '.', '.', '#', '.', 'G']
+</pre>
+<script>
+    function MazeSolver(maze) {
+        this.maze = maze;
+     
+        this.traverse = function(column, row) {
+            if(this.maze[column][row] == 2) {
+                console.log("We solved the maze at (" + column + ", " + row + ")");
+            } else if(this.maze[column][row] == 1) {
+                console.log("At valid position (" + column + ", " + row + ")");
+                this.maze[column][row] = 9;
+                if(column < this.maze.length - 1) {
+                    this.traverse(column + 1, row);
+                }
+                if(row < this.maze[column].length - 1) {
+                    this.traverse(column, row + 1);
+                }
+                if(column > 0) {
+                    this.traverse(column - 1, row);
+                }
+                if(row > 0) {
+                    this.traverse(column, row - 1);
+                }
+            } 
+        };
+    };
+    
+    function findPath(maze) {
+        this.maze = maze;
+        this.count = 0;
+        this.hasReachedGoal = false;
+
+        this.traverse = function (column, row) {
+            // make sure column and row are not out of bounds of maze
+            if (!this.maze[column]) {
+                return false;
+            }
+            if (!this.maze[column][row]) {
+                return false;
+            }
+
+            if (this.maze[column][row] == 'G') {
+                console.log('GOAL at ', column, row);
+                this.count++;
+                this.hasReachedGoal = true;
+
+                return true;
+            }
+
+            if (this.maze[column][row] == '#') {
+                console.log('hit a wall at', column, row);
+
+                this.count++;
+
+                return false;
+            }
+            
+            if (this.maze[column][row] == '.') {
+                if (this.count == 0) {
+                    this.maze[column][row] = 'S';
+                } else {
+                    this.maze[column][row] = '+';
+                }
+
+                this.count++;
+                
+                console.log('marking as part of possible path at', column, row);
+                return true;
+            }
+
+            return false;
+        }
+
+        this.start = function (column, row) {
+            if (!this.hasReachedGoal) {
+                var north = this.traverse(column - 1, row),
+                    east = this.traverse(column, row + 1),
+                    south = this.traverse(column + 1, row),
+                    west = this.traverse(column, row - 1);
+
+                if (north) {
+                    console.log(north, 'north');
+                    return true;
+                }
+
+                if (east) {
+                    console.log(east, 'east');
+                    return true;
+                }
+
+                if (south) {
+                    console.log(south, 'south');
+                    return true;
+                }
+
+                if (west) {
+                    console.log(west, 'west');
+                    return true;
+                }
+            }
+        }
+        
+    }
+
+    var myMaze = [
+            ['.', '#', '#', '#', '#', '#'],
+            ['.', '.', '.', '.', '.', '#'],
+            ['#', '.', '#', '#', '#', '#'],
+            ['#', '.', '#', '#', '#', '#'],
+            ['.', '.', '.', '#', '.', 'G']
+            //['#', '#', '.', '.', '.', '#']
+        ],
+        someoneElsesMaze = [
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 1, 1, 1, 0, 0, 0, 0, 0],
+            [1, 1, 1, 0, 1, 0, 0, 1, 1, 1],
+            [0, 1, 0, 0, 1, 0, 0, 1, 0, 0],
+            [0, 1, 1, 1, 1, 0, 1, 1, 1, 0],
+            [0, 1, 0, 0, 1, 0, 1, 0, 1, 0],
+            [0, 0, 0, 0, 1, 1, 1, 0, 1, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 1, 2],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        ],
+        ms = new MazeSolver(someoneElsesMaze);
+       // ms.traverse(3,0);
+        var yep = new findPath(myMaze);
+        //console.log(yep.traverse(4,4));
+        yep.start(0,0);
+</script>
